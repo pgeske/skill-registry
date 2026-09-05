@@ -40,6 +40,16 @@ function shortModelName(modelId: string | undefined): string {
 	return parts.at(-1) ?? "no model";
 }
 
+/** Provider-qualified label so identical model names stay distinguishable. */
+export function providerModelLabel(
+	model: { id?: string; provider?: string } | undefined,
+): string {
+	if (!model?.id) return "no model";
+	const name = shortModelName(model.id);
+	if (!model.provider) return name;
+	return `${cleanLabel(model.provider, "")}/${name}`;
+}
+
 /** Renders the four high-signal session values as one padded, width-safe line. */
 export function renderCompactFooterLine(
 	width: number,
@@ -95,7 +105,7 @@ export default function compactFooter(pi: ExtensionAPI) {
 					renderCompactFooterLine(
 						width,
 						{
-							model: shortModelName(ctx.model?.id),
+							model: providerModelLabel(ctx.model),
 							thinking: ctx.thinkingLevel ?? "off",
 							session: pi.getSessionName() ?? "untitled",
 							contextPercent: ctx.getContextUsage()?.percent ?? null,

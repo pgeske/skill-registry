@@ -65,3 +65,12 @@ test("compact footer marks context as unknown without adding another line", () =
 	assert.equal(line.includes("\n"), false);
 	assert.match(line, /context —  $/);
 });
+
+test("provider model label qualifies custom providers and collapses built-in paths", async () => {
+	const { providerModelLabel } = await import("../extensions/compact-footer/index.ts");
+
+	assert.equal(providerModelLabel({ id: "baseten/zai-org/GLM-5.3-Flash", provider: "lan-gateway" }), "lan-gateway/GLM-5.3-Flash");
+	assert.equal(providerModelLabel({ id: "gpt-5.6-sol", provider: "openai-codex" }), "openai-codex/gpt-5.6-sol");
+	assert.equal(providerModelLabel({ id: "gpt-5.6-sol" }), "gpt-5.6-sol");
+	assert.equal(providerModelLabel(undefined), "no model");
+});
